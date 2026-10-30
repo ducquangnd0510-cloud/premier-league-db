@@ -436,7 +436,7 @@ WHERE
 ORDER BY ChenhLechXacSuat DESC;
 
 
--- 3. Tính tỷ lệ dự đoán đúng của mô hình AI trong một mùa giải
+-- 20. Tính tỷ lệ dự đoán đúng của mô hình AI trong một mùa giải
 SELECT
     mg.MaMuaGiai,
     mg.TenMuaGiai,
