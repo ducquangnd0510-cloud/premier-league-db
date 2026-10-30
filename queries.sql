@@ -399,3 +399,90 @@ SELECT
 FROM ThongKePhongDo tk
 JOIN CauLacBo clb ON tk.MaCLB = clb.MaCLB
 WHERE tk.MaTD = 'TD001';
+-- 18. Hiển thị xác suất thắng/hòa/thua mà AI đã dự đoán cho một trận đấu cụ thể, sắp xếp theo thời gian chạy dự đoán gần nhất
+SELECT
+    MaDuDoan,
+    MaTD,
+    XacSuatThangNha,
+    XacSuatHoa,
+    XacSuatThangKhach,
+    NgayGioChayDuDoan,
+    KetQuaThucTe
+FROM DuDoanTranDau
+WHERE MaTD = 'TD001'
+ORDER BY NgayGioChayDuDoan DESC;
+
+
+-- 19. Liệt kê các trận đấu mà đội có xác suất thắng thấp hơn lại giành chiến thắng, sắp xếp theo mức chênh lệch xác suất lớn nhất
+SELECT
+    d.MaTD,
+    d.XacSuatThangNha,
+    d.XacSuatHoa,
+    d.XacSuatThangKhach,
+    d.KetQuaThucTe,
+    CASE
+        WHEN d.KetQuaThucTe = 'Thắng nhà'
+            THEN d.XacSuatThangKhach - d.XacSuatThangNha
+        WHEN d.KetQuaThucTe = 'Thắng khách'
+            THEN d.XacSuatThangNha - d.XacSuatThangKhach
+    END AS ChenhLechXacSuat
+FROM DuDoanTranDau d
+WHERE
+    (d.KetQuaThucTe = 'Thắng nhà'
+        AND d.XacSuatThangNha < d.XacSuatThangKhach)
+    OR
+    (d.KetQuaThucTe = 'Thắng khách'
+        AND d.XacSuatThangKhach < d.XacSuatThangNha)
+ORDER BY ChenhLechXacSuat DESC;
+
+
+-- 3. Tính tỷ lệ dự đoán đúng của mô hình AI trong một mùa giải
+SELECT
+    mg.MaMuaGiai,
+    mg.TenMuaGiai,
+    COUNT(d.MaDuDoan) AS TongSoDuDoan,
+    SUM(
+        CASE
+            WHEN
+                (d.KetQuaThucTe = 'Thắng nhà'
+                    AND d.XacSuatThangNha > d.XacSuatHoa
+                    AND d.XacSuatThangNha > d.XacSuatThangKhach)
+                OR
+                (d.KetQuaThucTe = 'Hòa'
+                    AND d.XacSuatHoa > d.XacSuatThangNha
+                    AND d.XacSuatHoa > d.XacSuatThangKhach)
+                OR
+                (d.KetQuaThucTe = 'Thắng khách'
+                    AND d.XacSuatThangKhach > d.XacSuatThangNha
+                    AND d.XacSuatThangKhach > d.XacSuatHoa)
+            THEN 1
+            ELSE 0
+        END
+    ) AS SoDuDoanDung,
+    ROUND(
+        100.0 * SUM(
+            CASE
+                WHEN
+                    (d.KetQuaThucTe = 'Thắng nhà'
+                        AND d.XacSuatThangNha > d.XacSuatHoa
+                        AND d.XacSuatThangNha > d.XacSuatThangKhach)
+                    OR
+                    (d.KetQuaThucTe = 'Hòa'
+                        AND d.XacSuatHoa > d.XacSuatThangNha
+                        AND d.XacSuatHoa > d.XacSuatThangKhach)
+                    OR
+                    (d.KetQuaThucTe = 'Thắng khách'
+                        AND d.XacSuatThangKhach > d.XacSuatThangNha
+                        AND d.XacSuatThangKhach > d.XacSuatHoa)
+                THEN 1
+                ELSE 0
+            END
+        ) / COUNT(d.MaDuDoan),
+        2
+    ) AS TyLeDuDoanDung
+FROM MuaGiai mg
+JOIN TranDau td ON td.MaMuaGiai = mg.MaMuaGiai
+JOIN DuDoanTranDau d ON d.MaTD = td.MaTD
+WHERE mg.MaMuaGiai = 'MG001'
+    AND d.KetQuaThucTe IS NOT NULL
+GROUP BY mg.MaMuaGiai, mg.TenMuaGiai;
