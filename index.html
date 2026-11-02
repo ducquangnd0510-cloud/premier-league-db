@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quản lý giải Ngoại hạng Anh</title>
+<script>try{document.documentElement.dataset.theme=localStorage.getItem("th")||"light"}catch(e){document.documentElement.dataset.theme="light"}</script>
+<link rel="stylesheet" href="style.css">
+<style>
+/* ===== Giao diện kiểu trang Premier League: nền sáng, header tím, dải tỷ số, bảng xếp hạng ===== */
+body{background:var(--bg)}
+header{background:#38003c;border-bottom:0;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+header::after{display:none}
+header h1{font-size:1.15rem}
+#ms{border:1px solid #6b3a73;background:#38003c;color:#fff;border-radius:20px;padding:6px 10px;font-size:.8rem}
+#th{border:1px solid #6b3a73;background:none;color:#fff;border-radius:20px;padding:6px 12px;cursor:pointer;font-size:.8rem}
+nav{background:#38003c;border-bottom:3px solid #00ff85;padding:0 12px}
+nav button{color:#e6d3ee;border-radius:0;padding:14px 16px;font-weight:600}
+nav button.on{background:#00ff85;color:#38003c}
+#tick{display:flex;overflow-x:auto;background:var(--card);border-bottom:1px solid var(--bd)}
+#tick:empty{display:none}
+.tk-h{flex:none;background:#38003c;color:#fff;padding:0 20px;font-weight:700;display:flex;align-items:center}
+.tk{flex:none;min-width:175px;padding:8px 14px;border-right:1px solid var(--bd);font-size:.85rem}
+.tk small{color:var(--mut)}
+.tk div{display:flex;justify-content:space-between;gap:10px}
+.card{border-top:1px solid var(--bd);border-radius:8px}
+h2{font-size:1.25rem}
+.crest{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--pri);color:var(--onpri);font-size:.6rem;font-weight:700;margin-right:10px;vertical-align:middle}
+.form i{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;font-style:normal;font-size:.65rem;font-weight:700;color:#fff;margin:0 2px}
+.form .T{background:#00a860}.form .H{background:#8a8a8a}.form .B{background:#e90052}
+footer{max-width:none;margin:30px 0 0;background:#38003c;color:#d9c7e0;padding:22px 16px;font-size:.85rem}
+</style>
+</head>
+<body>
+<header><h1>⚽ Hệ thống quản lý Ngoại hạng Anh</h1><span style="display:flex;gap:8px;align-items:center"><select id="ms" aria-label="Chọn mùa giải"></select><button id="th" onclick="var d=document.documentElement,v=d.dataset.theme==='dark'?'light':'dark';d.dataset.theme=v;try{localStorage.setItem('th',v)}catch(e){}">Sáng / Tối</button></span></header>
+<nav id="nav"></nav>
+<div id="tick"></div>
+<main id="view"></main>
+<footer>BTL Cơ sở dữ liệu · Nhóm 21 · Dữ liệu minh họa</footer>
+<script src="script.js"></script>
+</body>
+</html>
